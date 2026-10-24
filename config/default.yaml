@@ -1,0 +1,162 @@
+# Market Risk Model Validation Workbench (RVW) - Default Configuration
+
+universe:
+  tickers:
+    - SPY
+    - QQQ
+    - IWM
+    - EFA
+    - EEM
+    - VNQ
+    - TLT
+    - IEF
+    - LQD
+    - HYG
+    - GLD
+    - DBC
+  start_date: "2007-06-01"
+  end_date: null  # null defaults to latest available
+
+periods:
+  training:
+    start_date: "2007-06-01"
+    end_date: "2014-12-31"
+  validation:
+    start_date: "2015-01-01"
+    end_date: "2018-12-31"
+  test:
+    start_date: "2019-01-01"
+    end_date: null
+
+freeze_hyperparameters: false
+frozen_params_file: "results/frozen_hyperparameters.json"
+
+risk_conventions:
+  horizon_days: 1
+  var_alphas:
+    - 0.95
+    - 0.99
+  es_alphas:
+    - 0.975
+    - 0.99
+
+models:
+  historical_simulation:
+    interpolation: "linear"
+  parametric_normal:
+    assume_zero_mean: false
+  parametric_t:
+    fit_method: "mle"
+    min_df: 2.1
+  ewma:
+    lambda_param: 0.94
+    lambda_candidates:
+      - 0.94
+      - 0.97
+  garch_fhs:
+    p: 1
+    q: 1
+    dist: "StudentsT"
+    resample_size: 10000
+  monte_carlo:
+    num_simulations: 25000
+    distribution: "normal"
+
+walkforward:
+  window_length: 500
+  window_candidates:
+    - 250
+    - 500
+    - 1000
+  window_type: "rolling"  # "rolling" or "expanding"
+  refit_every: 5  # refit slow models every N days
+  fallback_to_historical_on_failure: true
+
+seeds:
+  global_seed: 42
+  monte_carlo_seed: 1337
+  garch_seed: 2024
+  synthetic_seed: 777
+
+data_validation:
+  max_return_jump: 0.25  # 25% single-day absolute return threshold
+  max_stale_days: 5      # Consecutive zero returns flagged as stale
+  max_calendar_gap_days: 5  # Business day gap threshold
+
+portfolios:
+  equal_weight:
+    SPY: 0.08333333333333333
+    QQQ: 0.08333333333333333
+    IWM: 0.08333333333333333
+    EFA: 0.08333333333333333
+    EEM: 0.08333333333333333
+    VNQ: 0.08333333333333333
+    TLT: 0.08333333333333333
+    IEF: 0.08333333333333333
+    LQD: 0.08333333333333333
+    HYG: 0.08333333333333333
+    GLD: 0.08333333333333333
+    DBC: 0.08333333333333333
+  sixty_forty:
+    SPY: 0.60
+    IEF: 0.40
+  risk_tilted:
+    SPY: 0.20
+    QQQ: 0.15
+    IWM: 0.10
+    EEM: 0.05
+    HYG: 0.15
+    LQD: 0.15
+    TLT: 0.10
+    GLD: 0.10
+  equity_heavy:
+    SPY: 0.40
+    QQQ: 0.30
+    IWM: 0.15
+    EFA: 0.15
+
+scenarios:
+  historical:
+    gfc:
+      name: "Global Financial Crisis Lehman Crash"
+      start_date: "2008-09-15"
+      end_date: "2008-11-20"
+    covid_crash:
+      name: "COVID-19 Market Shock"
+      start_date: "2020-02-19"
+      end_date: "2020-03-23"
+    rates_shock_2022:
+      name: "2022 Fed Tightening / Inflation Shock"
+      start_date: "2022-01-03"
+      end_date: "2022-06-16"
+    aug_2015_selloff:
+      name: "August 2015 Flash Selloff"
+      start_date: "2015-08-18"
+      end_date: "2015-08-25"
+  hypothetical:
+    equity_credit_shock:
+      name: "Equities -20%, Credit -8%, Gold +5%, Rates +100bp"
+      asset_shocks:
+        SPY: -0.20
+        QQQ: -0.25
+        IWM: -0.25
+        EFA: -0.20
+        EEM: -0.22
+        VNQ: -0.18
+        HYG: -0.08
+        LQD: -0.05
+        GLD: 0.05
+        DBC: -0.10
+      yield_shocks_bps:
+        TLT: 100  # duration ~17 yrs -> -17%
+        IEF: 100  # duration ~7.5 yrs -> -7.5%
+      duration_assumptions:
+        TLT: 17.0
+        IEF: 7.5
+
+paths:
+  cache_dir: "data/cache"
+  sample_data_file: "data/sample/synthetic_prices.parquet"
+  results_dir: "results"
+  reports_dir: "reports"
+  logs_dir: "logs"

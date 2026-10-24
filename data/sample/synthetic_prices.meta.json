@@ -1,0 +1,25 @@
+{
+  "parquet_file": "synthetic_prices.parquet",
+  "created_at_utc": "2026-10-24T17:53:36.750268+00:00",
+  "row_count": 4456,
+  "column_count": 12,
+  "tickers": [
+    "SPY",
+    "QQQ",
+    "IWM",
+    "EFA",
+    "EEM",
+    "VNQ",
+    "TLT",
+    "IEF",
+    "LQD",
+    "HYG",
+    "GLD",
+    "DBC"
+  ],
+  "start_date": "2007-06-01",
+  "end_date": "2024-06-28",
+  "is_synthetic": true,
+  "source": "SYNTHETIC",
+  "disclaimer": "Educational prototype, inspired by model-validation practice; not a production risk system; no claim of compliance with Basel, SR 11-7, or any other regulation."
+}

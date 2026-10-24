@@ -1,9 +1,9 @@
 # Project Progress Tracker: Market Risk Model Validation Workbench
 
 ## Status Overview
-- **Current Milestone**: Milestone 0 - Repository Inception & CI Skeleton
+- **Current Milestone**: Milestone 1 - Scaffold, Config, Structured Logging & Data Pipeline
 - **Overall Status**: In Progress
-- **Push Status**: Pending Initial Commit & Push
+- **Push Status**: Push Pending (Network / Auth Boundary - Run `git push -u origin main` once online credentials available)
 - **Current Test Command**: `pytest -q`
 
 ---
@@ -13,8 +13,8 @@
 | Milestone | Description | Status | Verification & Deliverables |
 |---|---|---|---|
 | **M0** | Repository Inception & CI Skeleton | Completed | git init, .gitignore, LICENSE, pyproject.toml, requirements.txt, smoke test, CI workflow |
-| **M1** | Scaffold, Config, Structured Logging & Data Pipeline | In Progress | YAML config, JSONL logging, Yahoo fetcher, Parquet cache, data validator, synthetic generator |
-| **M2** | Portfolio Framework, Returns Engine & Time Period Splitter | Not Started | Portfolio weights, preset allocations, returns calculation, PeriodSplit freeze guard |
+| **M1** | Scaffold, Config, Structured Logging & Data Pipeline | Completed | YAML config, JSONL logging, Yahoo fetcher, Parquet cache, data validator, synthetic generator |
+| **M2** | Portfolio Framework, Returns Engine & Time Period Splitter | In Progress | Portfolio weights, preset allocations, returns calculation, PeriodSplit freeze guard |
 | **M3** | Comprehensive Risk Calculation Engine (6 Core Models) | Not Started | HS, Normal, Student-t, EWMA, GARCH FHS, Monte Carlo, analytical reference tests |
 | **M4** | Strict Walk-Forward Simulation Engine | Not Started | t-1 causality guard, rolling/expanding window, refit frequency, failure tracking |
 | **M5** | Regulatory & Statistical Backtesting Suite | Not Started | Kupiec, Christoffersen independence, CC, Basel traffic-light, McNeil-Frey ES |

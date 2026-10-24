@@ -1,0 +1,109 @@
+# Fast synthetic configuration for testing and CI
+
+universe:
+  tickers:
+    - SPY
+    - QQQ
+    - IWM
+    - TLT
+    - GLD
+  start_date: "2010-01-01"
+  end_date: "2020-12-31"
+
+periods:
+  training:
+    start_date: "2010-01-01"
+    end_date: "2014-12-31"
+  validation:
+    start_date: "2015-01-01"
+    end_date: "2017-12-31"
+  test:
+    start_date: "2018-01-01"
+    end_date: "2020-12-31"
+
+freeze_hyperparameters: false
+frozen_params_file: "results/test_frozen_hyperparameters.json"
+
+risk_conventions:
+  horizon_days: 1
+  var_alphas:
+    - 0.95
+    - 0.99
+  es_alphas:
+    - 0.975
+    - 0.99
+
+models:
+  historical_simulation:
+    interpolation: "linear"
+  parametric_normal:
+    assume_zero_mean: false
+  parametric_t:
+    fit_method: "mle"
+    min_df: 2.1
+  ewma:
+    lambda_param: 0.94
+    lambda_candidates:
+      - 0.94
+      - 0.97
+  garch_fhs:
+    p: 1
+    q: 1
+    dist: "StudentsT"
+    resample_size: 1000
+  monte_carlo:
+    num_simulations: 2000
+    distribution: "normal"
+
+walkforward:
+  window_length: 250
+  window_candidates:
+    - 250
+  window_type: "rolling"
+  refit_every: 10
+  fallback_to_historical_on_failure: true
+
+seeds:
+  global_seed: 42
+  monte_carlo_seed: 1337
+  garch_seed: 2024
+  synthetic_seed: 777
+
+data_validation:
+  max_return_jump: 0.25
+  max_stale_days: 5
+  max_calendar_gap_days: 5
+
+portfolios:
+  equal_weight:
+    SPY: 0.2
+    QQQ: 0.2
+    IWM: 0.2
+    TLT: 0.2
+    GLD: 0.2
+  sixty_forty:
+    SPY: 0.6
+    TLT: 0.4
+
+scenarios:
+  historical:
+    aug_2015_selloff:
+      name: "August 2015 Flash Selloff"
+      start_date: "2015-08-18"
+      end_date: "2015-08-25"
+  hypothetical:
+    test_shock:
+      name: "Equities -10%, Bonds +2%"
+      asset_shocks:
+        SPY: -0.10
+        QQQ: -0.12
+        IWM: -0.15
+        TLT: 0.02
+        GLD: 0.01
+
+paths:
+  cache_dir: "data/cache"
+  sample_data_file: "data/sample/synthetic_prices.parquet"
+  results_dir: "results"
+  reports_dir: "reports"
+  logs_dir: "logs"
