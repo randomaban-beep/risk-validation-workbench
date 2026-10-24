@@ -21,7 +21,8 @@
 | **M6** | Hyperparameter Tuning, Selection & Validation Freeze | Completed | Validation window/lambda tuning, freeze artifact, test-set lock |
 | **M7** | Stress Testing & Euler Risk Attribution | Completed | Historical scenarios, hypothetical shocks, stressed covar, Euler component VaR/ES |
 | **M8** | Artifact-Driven Report Generation & Automated Findings | Completed | Jinja2 HTML/MD report, results/summary.json, RESULTS_SUMMARY.md, findings engine |
-| **M9** | Streamlit Validation Dashboard | In Progress | Interactive multi-page UI, Plotly charts, disclaimer footer |
+| **M9** | Streamlit Validation Dashboard | Completed | Interactive multi-page UI, Plotly charts, disclaimer footer |
+| **M10** | Final Polish, Documentation, Packaging & Release | In Progress | Complete README, sample report, docs/REPO_METADATA.md, tag v0.1.0, full suite green |
 | **M4** | Strict Walk-Forward Simulation Engine | Not Started | t-1 causality guard, rolling/expanding window, refit frequency, failure tracking |
 | **M5** | Regulatory & Statistical Backtesting Suite | Not Started | Kupiec, Christoffersen independence, CC, Basel traffic-light, McNeil-Frey ES |
 | **M6** | Hyperparameter Tuning, Selection & Validation Freeze | Not Started | Validation window/lambda tuning, freeze artifact, test-set lock |
