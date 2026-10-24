@@ -1,7 +1,7 @@
 # Market Risk Model Validation Benchmark: Headline Results
 
 **DATA SOURCE: REAL MARKET DATA (yfinance)**
-*Run Timestamp*: 2026-10-24T22:21:41.253397+00:00
+*Run Timestamp*: 2026-10-24T22:40:51.059765+00:00
 *Portfolio*: `equal_weight` (12 assets)
 *Test Evaluations Count*: 1
 
@@ -13,12 +13,12 @@
 
 | Model Name | Obs | Hits | Hit Rate | Expected | Kupiec p-val | CC p-val | Basel Zone (worst 250d) | Basel Zone (latest 250d) | McNeil-Frey p-val | Mean VaR | Mean ES |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| **historical_simulation** | 1466 | 13 | 0.89% | 14.66 | 0.6568 | 0.0148 | **Yellow** | Green | 0.9827 | 0.0186 | 0.0323 |
-| **parametric_normal** | 1466 | 14 | 0.95% | 14.66 | 0.8614 | 0.0219 | **Yellow** | Green | 0.0080 | 0.0173 | 0.0199 |
-| **parametric_t** | 1466 | 11 | 0.75% | 14.66 | 0.3149 | 0.1152 | **Green** | Green | 0.9408 | 0.0201 | 0.0307 |
-| **ewma** | 1466 | 28 | 1.91% | 14.66 | 0.0019 | 0.0023 | **Yellow** | Yellow | 0.0026 | 0.0151 | 0.0173 |
-| **garch_fhs** | 1466 | 13 | 0.89% | 14.66 | 0.6568 | 0.2378 | **Yellow** | Green | 0.3295 | 0.0186 | 0.0232 |
-| **monte_carlo** | 1466 | 14 | 0.95% | 14.66 | 0.8614 | 0.0219 | **Yellow** | Green | 0.0095 | 0.0173 | 0.0199 |
+| **historical_simulation** | 1964 | 25 | 1.27% | 19.64 | 0.2435 | 0.0005 | **Red** | Green | 0.3175 | 0.0177 | 0.0305 |
+| **parametric_normal** | 1964 | 31 | 1.58% | 19.64 | 0.0175 | 0.0003 | **Red** | Green | 0.0008 | 0.0162 | 0.0186 |
+| **parametric_t** | 1964 | 22 | 1.12% | 19.64 | 0.5995 | 0.0053 | **Red** | Green | 0.0623 | 0.0193 | 0.0306 |
+| **ewma** | 1964 | 43 | 2.19% | 19.64 | 0.0000 | 0.0000 | **Red** | Green | 0.0002 | 0.0158 | 0.0181 |
+| **garch_fhs** | 1964 | 25 | 1.27% | 19.64 | 0.2435 | 0.0065 | **Yellow** | Green | 0.1265 | 0.0188 | 0.0235 |
+| **monte_carlo** | 1964 | 31 | 1.58% | 19.64 | 0.0175 | 0.0003 | **Red** | Green | 0.0008 | 0.0162 | 0.0186 |
 
 ---
 

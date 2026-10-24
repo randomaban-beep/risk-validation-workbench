@@ -100,7 +100,13 @@ def run_pipeline(
     models = get_all_models(config)
 
     # 5. Evaluate Validation Period (2015-01-01 to 2018-12-31)
-    val_sample = period_split.slice_data("2013-01-01", config.periods.validation.end_date)
+    val_start_date = config.periods.validation.start_date
+    val_first_idx = returns.index.get_loc(returns.loc[val_start_date:].index[0])
+    val_warmup_start_idx = max(0, val_first_idx - opt_window)
+    val_sample = returns.iloc[val_warmup_start_idx:]
+    if config.periods.validation.end_date:
+        val_sample = val_sample.loc[:config.periods.validation.end_date]
+
     val_frames: List[ForecastFrame] = []
     val_summaries = []
 
@@ -124,8 +130,14 @@ def run_pipeline(
 
     # 6. Evaluate Test Period (2019-01-01 to end) - strictly guarded by freeze
     logger.info("Accessing test period under freeze guard...")
-    # Slicing from warm-up prior to test period start
-    test_full = period_split.slice_data("2017-01-01", config.periods.test.end_date)
+    # Slicing from warm-up prior to test period start (dynamically taking opt_window days prior to test start)
+    test_start_date = config.periods.test.start_date
+    test_first_idx = returns.index.get_loc(returns.loc[test_start_date:].index[0])
+    test_warmup_start_idx = max(0, test_first_idx - opt_window)
+    test_full = returns.iloc[test_warmup_start_idx:]
+    if config.periods.test.end_date:
+        test_full = test_full.loc[:config.periods.test.end_date]
+
     # Audited access to verify freeze enforcement
     _ = period_split.get_test(caller_context="pipeline_execution")
 

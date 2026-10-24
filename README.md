@@ -14,16 +14,16 @@ An end-to-end quantitative framework for market risk model benchmarking, out-of-
 ## 1. Headline Validation Results (Out-of-Sample Test Period)
 
 **DATA SOURCE: REAL MARKET DATA (yfinance)**
-The following headline benchmark metrics were computed on the out-of-sample test period (2019-01-01 to 2026-10-23, 1,466 observations) across the 12-asset liquid ETF universe (`SPY`, `QQQ`, `IWM`, `EFA`, `EEM`, `VNQ`, `TLT`, `IEF`, `LQD`, `HYG`, `GLD`, `DBC`) under an equal-weighted daily rebalanced portfolio:
+The following headline benchmark metrics were computed on the out-of-sample test period (2019-01-02 to 2026-10-23, 1,964 observations) across the 12-asset liquid ETF universe (`SPY`, `QQQ`, `IWM`, `EFA`, `EEM`, `VNQ`, `TLT`, `IEF`, `LQD`, `HYG`, `GLD`, `DBC`) under an equal-weighted daily rebalanced portfolio:
 
 | Model Name | Obs | Hits | Hit Rate | Expected | Kupiec p-val | CC p-val | Basel Zone (worst 250d) | Basel Zone (latest 250d) | McNeil-Frey p-val | Mean 99% VaR | Mean 99% ES |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| **Historical Simulation** | 1,466 | 13 | 0.89% | 14.66 | 0.6568 | 0.0148 | **Yellow** | Green | 0.9827 | 0.0186 | 0.0323 |
-| **Parametric Normal** | 1,466 | 14 | 0.95% | 14.66 | 0.8614 | 0.0219 | **Yellow** | Green | 0.0080 | 0.0173 | 0.0199 |
-| **Parametric Student-t** | 1,466 | 11 | 0.75% | 14.66 | 0.3149 | 0.1152 | **Green** | Green | 0.9408 | 0.0201 | 0.0307 |
-| **EWMA (RiskMetrics)** | 1,466 | 28 | 1.91% | 14.66 | 0.0019 | 0.0023 | **Yellow** | Yellow | 0.0026 | 0.0151 | 0.0173 |
-| **GARCH(1,1)-t FHS** | 1,466 | 13 | 0.89% | 14.66 | 0.6568 | 0.2378 | **Yellow** | Green | 0.3295 | 0.0186 | 0.0232 |
-| **Monte Carlo Simulation** | 1,466 | 14 | 0.95% | 14.66 | 0.8614 | 0.0219 | **Yellow** | Green | 0.0095 | 0.0173 | 0.0199 |
+| **Historical Simulation** | 1,964 | 25 | 1.27% | 19.64 | 0.2435 | 0.0005 | **Red** | Green | 0.3175 | 0.0177 | 0.0305 |
+| **Parametric Normal** | 1,964 | 31 | 1.58% | 19.64 | 0.0175 | 0.0003 | **Red** | Green | 0.0008 | 0.0162 | 0.0186 |
+| **Parametric Student-t** | 1,964 | 22 | 1.12% | 19.64 | 0.5995 | 0.0053 | **Red** | Green | 0.0623 | 0.0193 | 0.0306 |
+| **EWMA (RiskMetrics)** | 1,964 | 43 | 2.19% | 19.64 | 0.0000 | 0.0000 | **Red** | Green | 0.0002 | 0.0158 | 0.0181 |
+| **GARCH(1,1)-t FHS** | 1,964 | 25 | 1.27% | 19.64 | 0.2435 | 0.0065 | **Yellow** | Green | 0.1265 | 0.0188 | 0.0235 |
+| **Monte Carlo Simulation** | 1,964 | 31 | 1.58% | 19.64 | 0.0175 | 0.0003 | **Red** | Green | 0.0008 | 0.0162 | 0.0186 |
 
 *All outputs generated from verified test artifacts in `results/summary.json` and `results/test_summary.parquet`. Evaluation count on test period: exactly 1.*
 

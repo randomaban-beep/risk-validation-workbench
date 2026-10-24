@@ -110,7 +110,7 @@ Every report, dashboard page, CLI output, and README prominently displays:
 
 ## 10. Basel Traffic Light — Full-Period vs. Rolling Window (2026-10-25)
 The `evaluate_backtests()` function in `suite.py` calls `classify_basel_zone(n_exc, window_length=n_obs)` where
-`n_obs` is the full test-period observation count (~1,800 days), NOT a fixed 250-day window.
+`n_obs` is the full test-period observation count (1,964 days), NOT a fixed 250-day window.
 This means the zone boundary scales proportionally (`green_cutoff = floor(4 * n_obs/250)`), which is NOT the
 standard Basel interpretation (which always uses a fixed 250-day window).
 
@@ -127,7 +127,7 @@ volatility forecasts close to the unconditional variance. With similar mean VaR 
 underlying synthetic return path, two well-calibrated models can coincidentally agree on which days
 cross the threshold. The hit dates were verified to be identical in the synthetic run.
 This was **coincidence on synthetic data, not a code bug** — confirmed by running both models on real data,
-where they diverge. The GARCH failed-forecast count was 0 in both runs.
+where they diverge by 11 separate exception dates. The GARCH failed-forecast count was 0 in both runs.
 
 A diagnostic test was added to confirm GARCH and MC hit dates differ on real data.
 
@@ -135,6 +135,22 @@ A diagnostic test was added to confirm GARCH and MC hit dates differ on real dat
 
 ## 12. ES Test Low Power Warning (2026-10-25)
 The McNeil-Frey exceedance-residual test has low power when the number of tail exceedances is small
-(typically < 30). With 1% VaR over ~1,800 test-period days, expected exceedances ≈ 18, which is near the
+(typically < 30). With 1% VaR over 1,964 test-period days, expected exceedances ≈ 19.6, which is near the
 lower bound for reliable inference. This limitation is now stated in the report's Limitations section.
+
+---
+
+## 13. Dynamic Warm-Up Slicing for Out-of-Sample Evaluation (2026-10-25)
+In the initial implementation, `pipeline.py` statically sliced test data starting at `"2017-01-01"`. When the validation
+grid search selected `opt_window = 1000` trading days, 1,000 trading days prior to 2019-01-02 reached back to `2015-01-12`.
+Because `2017-01-01` provided only ~500 days of history prior to 2019-01-02, the first ~498 test-period days (2019 to late 2020)
+were consumed by `run_walkforward`'s initial warm-up, causing the test period forecast outputs to begin on `2020-12-22` (1,466 obs).
+
+**Fix applied**: Slicing for both validation and test periods in `pipeline.py` is now dynamic: it locates the exact integer index
+of the period start date in the returns matrix and steps back exactly `opt_window` trading days into the preceding period.
+As a result:
+- **Training Period**: 1,910 returns (2007-06-04 to 2014-12-31)
+- **Validation Period**: 1,006 returns (2015-01-02 to 2018-12-31)
+- **Test Period**: 1,964 forecasts (2019-01-02 to 2026-10-23)
+The entire test period is now evaluated from day one without truncation.
 

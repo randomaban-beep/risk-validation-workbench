@@ -16,25 +16,35 @@
 
 - Hyperparameter Grid Search selected a rolling window of 1000 trading days and an EWMA decay factor of 0.97.
 
-- Basel Traffic Light (99% VaR): Models classified in the Green zone (<= 4 exceptions): `parametric_t`.
+- Basel Traffic Light (99% VaR): Models in the Yellow zone (supervisory review): `garch_fhs`.
 
-- Basel Traffic Light (99% VaR): Models in the Yellow zone (supervisory review): `historical_simulation`, `parametric_normal`, `ewma`, `garch_fhs`, `monte_carlo`.
+- Basel Traffic Light (99% VaR): Models in the Red zone (model rejection): `historical_simulation`, `parametric_normal`, `parametric_t`, `ewma`, `monte_carlo`.
 
-- Kupiec Unconditional Coverage rejection: Model `ewma` failed at alpha=0.05 (p=0.0019) with 28 realized exceptions versus 14.7 expected.
+- Kupiec Unconditional Coverage rejection: Model `parametric_normal` failed at alpha=0.05 (p=0.0175) with 31 realized exceptions versus 19.6 expected.
 
-- Christoffersen Independence rejection: Model `historical_simulation` exhibited significant exception clustering (p=0.0041 < 0.05), violating serial independence.
+- Kupiec Unconditional Coverage rejection: Model `ewma` failed at alpha=0.05 (p=0.0000) with 43 realized exceptions versus 19.6 expected.
 
-- Christoffersen Independence rejection: Model `parametric_normal` exhibited significant exception clustering (p=0.0058 < 0.05), violating serial independence.
+- Kupiec Unconditional Coverage rejection: Model `monte_carlo` failed at alpha=0.05 (p=0.0175) with 31 realized exceptions versus 19.6 expected.
 
-- Christoffersen Independence rejection: Model `monte_carlo` exhibited significant exception clustering (p=0.0058 < 0.05), violating serial independence.
+- Christoffersen Independence rejection: Model `historical_simulation` exhibited significant exception clustering (p=0.0002 < 0.05), violating serial independence.
 
-- McNeil-Frey ES Exceedance test rejection: Model `parametric_normal` rejected H0 (p=0.0080 < 0.05), indicating realized tail losses significantly exceeded the Expected Shortfall forecasts.
+- Christoffersen Independence rejection: Model `parametric_normal` exhibited significant exception clustering (p=0.0011 < 0.05), violating serial independence.
 
-- McNeil-Frey ES Exceedance test rejection: Model `ewma` rejected H0 (p=0.0026 < 0.05), indicating realized tail losses significantly exceeded the Expected Shortfall forecasts.
+- Christoffersen Independence rejection: Model `parametric_t` exhibited significant exception clustering (p=0.0014 < 0.05), violating serial independence.
 
-- McNeil-Frey ES Exceedance test rejection: Model `monte_carlo` rejected H0 (p=0.0095 < 0.05), indicating realized tail losses significantly exceeded the Expected Shortfall forecasts.
+- Christoffersen Independence rejection: Model `ewma` exhibited significant exception clustering (p=0.0150 < 0.05), violating serial independence.
 
-- LIMITATION — McNeil-Frey ES Test Power: With approximately 1466 test-period observations, the expected number of 99% VaR exceedances is approximately 14.7. The McNeil-Frey test has limited statistical power with fewer than ~30 exceedances. Non-rejection should not be interpreted as evidence of good ES calibration.
+- Christoffersen Independence rejection: Model `garch_fhs` exhibited significant exception clustering (p=0.0032 < 0.05), violating serial independence.
+
+- Christoffersen Independence rejection: Model `monte_carlo` exhibited significant exception clustering (p=0.0011 < 0.05), violating serial independence.
+
+- McNeil-Frey ES Exceedance test rejection: Model `parametric_normal` rejected H0 (p=0.0008 < 0.05), indicating realized tail losses significantly exceeded the Expected Shortfall forecasts.
+
+- McNeil-Frey ES Exceedance test rejection: Model `ewma` rejected H0 (p=0.0002 < 0.05), indicating realized tail losses significantly exceeded the Expected Shortfall forecasts.
+
+- McNeil-Frey ES Exceedance test rejection: Model `monte_carlo` rejected H0 (p=0.0008 < 0.05), indicating realized tail losses significantly exceeded the Expected Shortfall forecasts.
+
+- LIMITATION — McNeil-Frey ES Test Power: With approximately 1964 test-period observations, the expected number of 99% VaR exceedances is approximately 19.6. The McNeil-Frey test has limited statistical power with fewer than ~30 exceedances. Non-rejection should not be interpreted as evidence of good ES calibration.
 
 
 ---
@@ -52,17 +62,17 @@
 | Model Name | Obs | Hits | Hit Rate | Expected | Kupiec p-val | Indep p-val | CC p-val | Basel Zone (worst 250d) | Basel Zone (latest 250d) | McNeil-Frey p-val | Mean VaR | Mean ES |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
 
-| **historical_simulation** | 1466 | 13 | 0.89% | 14.7 | 0.6568 | 0.0041 | 0.0148 | **Yellow** | Green | 0.9827 | 0.0186 | 0.0323 |
+| **historical_simulation** | 1964 | 25 | 1.27% | 19.6 | 0.2435 | 0.0002 | 0.0005 | **Red** | Green | 0.3175 | 0.0177 | 0.0305 |
 
-| **parametric_normal** | 1466 | 14 | 0.95% | 14.7 | 0.8614 | 0.0058 | 0.0219 | **Yellow** | Green | 0.0080 | 0.0173 | 0.0199 |
+| **parametric_normal** | 1964 | 31 | 1.58% | 19.6 | 0.0175 | 0.0011 | 0.0003 | **Red** | Green | 0.0008 | 0.0162 | 0.0186 |
 
-| **parametric_t** | 1466 | 11 | 0.75% | 14.7 | 0.3149 | 0.0688 | 0.1152 | **Green** | Green | 0.9408 | 0.0201 | 0.0307 |
+| **parametric_t** | 1964 | 22 | 1.12% | 19.6 | 0.5995 | 0.0014 | 0.0053 | **Red** | Green | 0.0623 | 0.0193 | 0.0306 |
 
-| **ewma** | 1466 | 28 | 1.91% | 14.7 | 0.0019 | 0.1135 | 0.0023 | **Yellow** | Yellow | 0.0026 | 0.0151 | 0.0173 |
+| **ewma** | 1964 | 43 | 2.19% | 19.6 | 0.0000 | 0.0150 | 0.0000 | **Red** | Green | 0.0002 | 0.0158 | 0.0181 |
 
-| **garch_fhs** | 1466 | 13 | 0.89% | 14.7 | 0.6568 | 0.1019 | 0.2378 | **Yellow** | Green | 0.3295 | 0.0186 | 0.0232 |
+| **garch_fhs** | 1964 | 25 | 1.27% | 19.6 | 0.2435 | 0.0032 | 0.0065 | **Yellow** | Green | 0.1265 | 0.0188 | 0.0235 |
 
-| **monte_carlo** | 1466 | 14 | 0.95% | 14.7 | 0.8614 | 0.0058 | 0.0219 | **Yellow** | Green | 0.0095 | 0.0173 | 0.0199 |
+| **monte_carlo** | 1964 | 31 | 1.58% | 19.6 | 0.0175 | 0.0011 | 0.0003 | **Red** | Green | 0.0008 | 0.0162 | 0.0186 |
 
 
 ---
@@ -101,7 +111,7 @@
 
 | Parameter | Value |
 |---|---|
-| Report Generated UTC | `2026-10-24T22:21:55.654320+00:00` |
+| Report Generated UTC | `2026-10-24T22:41:02.392141+00:00` |
 | Config SHA256 | `5e37ba00c7525d16844ad952bfecd2906989d6a110f7c08f09a73c8ae4085d36` |
 | Test Period Evaluations Count | `1` |
 | Global Seed | `42` |
