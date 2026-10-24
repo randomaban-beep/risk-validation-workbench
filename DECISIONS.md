@@ -15,19 +15,20 @@ This document records all key technical, architectural, and mathematical decisio
 
 ## 2. Dependency Pinning & Environment
 - **Python Version**: Python 3.11.9.
-- **Core Dependencies**: Exact pinned versions in `requirements.txt` to ensure 100% reproducible environments across Windows, Linux, and CI:
-  - `numpy==1.26.4`
-  - `pandas==2.2.2`
-  - `scipy==1.13.1`
-  - `statsmodels==0.14.2`
-  - `arch==7.0.0`
-  - `streamlit==1.36.0`
+- **Core Dependencies**: Exact pinned versions in `requirements.txt` matching the tested runtime environment:
+  - `numpy==2.3.5`
+  - `pandas==2.3.3`
+  - `scipy==1.17.1`
+  - `statsmodels==0.15.0`
+  - `arch==8.0.0`
+  - `streamlit==1.58.0`
   - `plotly==5.22.0`
-  - `pytest==8.2.2`
-  - `pyyaml==6.0.1`
-  - `yfinance==0.2.40`
-  - `pyarrow==16.1.0`
-  - `jinja2==3.1.4`
+  - `pytest==9.1.1`
+  - `pyyaml==6.0.3`
+  - `yfinance==1.7.0`
+  - `pyarrow==24.0.0`
+  - `jinja2==3.1.6`
+  - `click==8.4.2`
 
 ---
 
