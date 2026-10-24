@@ -27,6 +27,23 @@ The following headline benchmark metrics were computed on the out-of-sample test
 
 *All outputs generated from verified test artifacts in `results/summary.json` and `results/test_summary.parquet`. Evaluation count on test period: exactly 1.*
 
+### Hyperparameter Selection & Validation Tuning
+During the validation period (2015-01-02 to 2018-12-31), a grid search was conducted over estimation window lengths $\in \{250, 500, 750, 1000\}$ and EWMA decay parameters $\lambda \in \{0.94, 0.97\}$.
+- **Selected Rolling Window**: `1000` trading days (~4 calendar years)
+- **Selected EWMA Lambda**: `0.97`
+- **Tuning Objective**: $\min \left( |\text{actual\_exception\_rate} - 0.01| \times 100 + 0.5 \times \text{LR}_{cc} \right)$ (Best score: `2.0225`)
+- **Why the Grid Includes 1000 Days**: Bank regulatory standards (Basel Framework CRE52) mandate an observation period of at least one year (250 days), but market-risk desks routinely benchmark longer lookback horizons (3 to 5 years, approximately 750–1,000 trading days) to ensure covariance matrices and empirical quantiles span multiple macroeconomic cycles and volatility regimes without excessive turnover in historical tail samples. The 1,000-day window minimizes exception error and joint conditional coverage penalties on the validation sample.
+
+### Key Validation Findings
+Evaluating the frozen models out-of-sample over the 1,964 trading days from 2019 to 2026 highlights clear model trade-offs across historical crisis clusters (e.g., the March 2020 COVID shock and the 2022 interest rate cycle):
+- **Clustering & Conditional Coverage**: All six models reject the Christoffersen Conditional Coverage test ($p < 0.05$) due to severe exception clustering during the 2020 COVID shock, illustrating the well-documented volatility-clustering vulnerability of static lookback windows.
+- **Unconditional Coverage**: Historical Simulation ($p=0.2435$), Parametric Student-t ($p=0.5995$), and GARCH(1,1)-t FHS ($p=0.2435$) pass the Kupiec unconditional coverage test at the 5% significance level, while Parametric Normal ($p=0.0175$) and EWMA ($p=0.0000$) significantly underestimate exception rates.
+- **Expected Shortfall Calibration**: The McNeil-Frey ES test strongly rejects Parametric Normal ($p=0.0008$), Monte Carlo ($p=0.0008$), and EWMA ($p=0.0002$), proving that Gaussian tail assumptions underestimate tail severity when violations occur. In contrast, Historical Simulation ($p=0.3175$), Parametric Student-t ($p=0.0623$), and GARCH-FHS ($p=0.1265$) demonstrate adequate tail loss coverage.
+- **Basel Traffic Light Regime**: In the worst 250-day rolling window (dominated by the March 2020 market crash), five of the six models reached the Red zone (10+ exceptions), with only GARCH-FHS remaining in the Yellow zone. However, in the most recent 250-day rolling window (late 2025 to October 2026), all six models reside cleanly in the Green zone ($\le 4$ exceptions).
+- **Validation Caveat & Limitations**: These results reflect a **single test period (2019–2026)** and a **single equal-weighted asset allocation**. Because tail exceptions are rare ($N=22\text{--}43$ over 1,964 days), statistical backtests—particularly the McNeil-Frey ES test—suffer from **low power** when sample sizes are small. Non-rejection should not be conflated with proof of model adequacy.
+
+Full auditable validation findings and data-quality logs can be inspected in the committed [Sample Validation Report](docs/sample_report/validation_report.md) ([HTML version](docs/sample_report/validation_report.html)).
+
 ---
 
 ## 2. Interactive Validation Dashboard Overview
