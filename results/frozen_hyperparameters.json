@@ -1,0 +1,98 @@
+{
+  "status": "FROZEN",
+  "frozen_at_utc": "2026-10-24T18:15:54.238841+00:00",
+  "config_sha256": "5e37ba00c7525d16844ad952bfecd2906989d6a110f7c08f09a73c8ae4085d36",
+  "selected_hyperparameters": {
+    "selected_window_length": 500,
+    "selected_ewma_lambda": 0.94,
+    "selection_metric": "min(|actual_rate - 0.01| * 100 + 0.5 * LR_cc)",
+    "best_score": 3.2203,
+    "grid_evaluations": [
+      {
+        "model": "historical_simulation",
+        "window": 250,
+        "lambda": null,
+        "score": 3.9784609281503065,
+        "exceptions": 40,
+        "p_cc": 0.029160543484628
+      },
+      {
+        "model": "parametric_normal",
+        "window": 250,
+        "lambda": null,
+        "score": 11.166919667955137,
+        "exceptions": 54,
+        "p_cc": 3.650122611137385e-05
+      },
+      {
+        "model": "ewma",
+        "window": 250,
+        "lambda": 0.94,
+        "score": 12.560735895064502,
+        "exceptions": 56,
+        "p_cc": 9.73478676583266e-06
+      },
+      {
+        "model": "ewma",
+        "window": 250,
+        "lambda": 0.97,
+        "score": 10.501433783516987,
+        "exceptions": 53,
+        "p_cc": 6.849383092345588e-05
+      },
+      {
+        "model": "historical_simulation",
+        "window": 500,
+        "lambda": null,
+        "score": 3.220269908325214,
+        "exceptions": 34,
+        "p_cc": 0.05660835181510088
+      },
+      {
+        "model": "parametric_normal",
+        "window": 500,
+        "lambda": null,
+        "score": 10.971356574618907,
+        "exceptions": 50,
+        "p_cc": 4.594724671300714e-05
+      },
+      {
+        "model": "ewma",
+        "window": 500,
+        "lambda": 0.94,
+        "score": 12.400646495647553,
+        "exceptions": 52,
+        "p_cc": 1.1911896475403843e-05
+      },
+      {
+        "model": "ewma",
+        "window": 500,
+        "lambda": 0.97,
+        "score": 10.290855351033382,
+        "exceptions": 49,
+        "p_cc": 8.72108153535739e-05
+      }
+    ]
+  },
+  "universe": [
+    "SPY",
+    "QQQ",
+    "IWM",
+    "EFA",
+    "EEM",
+    "VNQ",
+    "TLT",
+    "IEF",
+    "LQD",
+    "HYG",
+    "GLD",
+    "DBC"
+  ],
+  "portfolios": [
+    "equal_weight",
+    "sixty_forty",
+    "risk_tilted",
+    "equity_heavy"
+  ],
+  "disclaimer": "Educational prototype, inspired by model-validation practice; not a production risk system; no claim of compliance with Basel, SR 11-7, or any other regulation."
+}

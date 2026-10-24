@@ -16,7 +16,7 @@ from rvw.backtests.christoffersen import (
 )
 from rvw.backtests.kupiec import KupiecResult, kupiec_pof_test
 from rvw.backtests.mcneil_frey import McNeilFreyResult, mcneil_frey_es_test
-from rvw.walkforward.engine import ForecastFrame
+from rvw.walkforward.engine import ForecastFrame, format_alpha_col
 
 
 @dataclass
@@ -86,8 +86,8 @@ def evaluate_backtests(
     Returns:
         ModelBacktestSummary: Comprehensive test metrics.
     """
-    col_str = f"{int(var_alpha * 100)}" if var_alpha.is_integer() else f"{var_alpha:.3f}".rstrip("0")
-    es_col_str = f"{int(es_alpha * 100)}" if es_alpha.is_integer() else f"{es_alpha:.3f}".rstrip("0")
+    col_str = format_alpha_col(var_alpha)
+    es_col_str = format_alpha_col(es_alpha)
 
     if col_str not in forecast_frame.hits.columns:
         raise KeyError(f"VaR alpha {var_alpha} (col '{col_str}') not found in ForecastFrame.")

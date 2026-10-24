@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market Risk Model Validation Report</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #0f172a;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #334155;
+      --text-bold: #0f172a;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --success: #16a34a;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      padding: 3rem;
+      border: 1px solid var(--border);
+    }
+    h1, h2, h3 {
+      color: var(--text-bold);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 2.25rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.75rem;
+      margin-top: 0;
+    }
+    h2 {
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .badge-synthetic {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+      font-weight: bold;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .disclaimer-box {
+      background-color: #eff6ff;
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f5f9;
+      color: var(--text-bold);
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    .zone-green {
+      color: var(--success);
+      font-weight: bold;
+    }
+    .zone-yellow {
+      color: var(--warning);
+      font-weight: bold;
+    }
+    .zone-red {
+      color: var(--danger);
+      font-weight: bold;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Market Risk Model Validation Report</h1>
+
+  
+  <div class="badge-synthetic">DATA SOURCE: SYNTHETIC</div>
+  
+
+  <div class="disclaimer-box">
+    <strong>Mandatory Regulatory & Production Disclaimer:</strong><br>
+    Educational prototype, inspired by model-validation practice; not a production risk system; no claim of compliance with Basel, SR 11-7, or any other regulation.
+  </div>
+
+  <h2>1. Executive Summary & Algorithmic Findings</h2>
+  <ul>
+    
+    <li>DATA STATUS: Validation was executed on calibrated SYNTHETIC market data. Statistical outcomes demonstrate code execution and pipeline integrity, not real-world market dynamics.</li>
+    
+    <li>Hyperparameter Grid Search selected a rolling window of 500 trading days and an EWMA decay factor of 0.94.</li>
+    
+    <li>Basel Traffic Light (99% VaR): Models classified in the Green zone (&lt;= 4 exceptions): `historical_simulation`, `parametric_normal`, `parametric_t`, `ewma`, `garch_fhs`, `monte_carlo`.</li>
+    
+    <li>Kupiec Unconditional Coverage rejection: Model `parametric_t` failed at alpha=0.05 (p=0.0269) with 7 realized exceptions versus 14.6 expected.</li>
+    
+    <li>Christoffersen Independence rejection: Model `ewma` exhibited significant exception clustering (p=0.0059 &lt; 0.05), violating serial independence.</li>
+    
+    <li>McNeil-Frey ES Exceedance: No model showed statistically significant tail underestimation at alpha=0.05.</li>
+    
+  </ul>
+
+  <h2>2. Indicative Universe & Data Quality Audit</h2>
+  <p><strong>Portfolio:</strong> <code>equal_weight</code></p>
+  <p><strong>Assets Included (12):</strong> SPY, QQQ, IWM, EFA, EEM, VNQ, TLT, IEF, LQD, HYG, GLD, DBC</p>
+  <p><strong>Evaluation Dates:</strong> 2019-01-01 to Latest</p>
+
+  <h2>3. Out-of-Sample Test Period Backtest Results (99% VaR & 99% ES)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Obs</th>
+        <th>Exceptions</th>
+        <th>Rate</th>
+        <th>Expected</th>
+        <th>Kupiec p-val</th>
+        <th>Indep p-val</th>
+        <th>CC p-val</th>
+        <th>Basel Zone</th>
+        <th>McNeil-Frey p</th>
+        <th>Mean VaR</th>
+        <th>Mean ES</th>
+      </tr>
+    </thead>
+    <tbody>
+      
+      <tr>
+        <td><strong>historical_simulation</strong></td>
+        <td>1455</td>
+        <td>12</td>
+        <td>0.82%</td>
+        <td>14.6</td>
+        <td>0.4884</td>
+        <td>0.6549</td>
+        <td>0.7118</td>
+        <td class="zone-green">Green</td>
+        <td>0.3279</td>
+        <td>0.0178</td>
+        <td>0.0229</td>
+      </tr>
+      
+      <tr>
+        <td><strong>parametric_normal</strong></td>
+        <td>1455</td>
+        <td>14</td>
+        <td>0.96%</td>
+        <td>14.6</td>
+        <td>0.8841</td>
+        <td>0.6018</td>
+        <td>0.8635</td>
+        <td class="zone-green">Green</td>
+        <td>0.0663</td>
+        <td>0.0177</td>
+        <td>0.0203</td>
+      </tr>
+      
+      <tr>
+        <td><strong>parametric_t</strong></td>
+        <td>1455</td>
+        <td>7</td>
+        <td>0.48%</td>
+        <td>14.6</td>
+        <td>0.0269</td>
+        <td>0.7947</td>
+        <td>0.0836</td>
+        <td class="zone-green">Green</td>
+        <td>0.7914</td>
+        <td>0.0212</td>
+        <td>0.0306</td>
+      </tr>
+      
+      <tr>
+        <td><strong>ewma</strong></td>
+        <td>1455</td>
+        <td>14</td>
+        <td>0.96%</td>
+        <td>14.6</td>
+        <td>0.8841</td>
+        <td>0.0059</td>
+        <td>0.0223</td>
+        <td class="zone-green">Green</td>
+        <td>0.0584</td>
+        <td>0.0172</td>
+        <td>0.0197</td>
+      </tr>
+      
+      <tr>
+        <td><strong>garch_fhs</strong></td>
+        <td>1455</td>
+        <td>13</td>
+        <td>0.89%</td>
+        <td>14.6</td>
+        <td>0.6775</td>
+        <td>0.6282</td>
+        <td>0.8156</td>
+        <td class="zone-green">Green</td>
+        <td>0.1912</td>
+        <td>0.0179</td>
+        <td>0.0219</td>
+      </tr>
+      
+      <tr>
+        <td><strong>monte_carlo</strong></td>
+        <td>1455</td>
+        <td>13</td>
+        <td>0.89%</td>
+        <td>14.6</td>
+        <td>0.6775</td>
+        <td>0.6282</td>
+        <td>0.8156</td>
+        <td class="zone-green">Green</td>
+        <td>0.0650</td>
+        <td>0.0178</td>
+        <td>0.0204</td>
+      </tr>
+      
+    </tbody>
+  </table>
+
+  <h2>4. Validation Period Tuning & Hyperparameter Selection</h2>
+  <p><strong>Selected Rolling Window:</strong> <code>500</code> trading days</p>
+  <p><strong>Selected EWMA Lambda:</strong> <code>0.94</code></p>
+  <p><strong>Selection Metric:</strong> min(|actual_rate - 0.01| * 100 + 0.5 * LR_cc) (Score: 3.2203)</p>
+
+  <h2>5. Model Methodologies & Assumptions</h2>
+  <ul>
+    <li><strong>Historical Simulation (HS):</strong> Empirical quantile of rolling historical losses with linear interpolation. Expected Shortfall estimated as empirical conditional tail mean.</li>
+    <li><strong>Parametric Normal:</strong> Analytical Gaussian variance-covariance model with standard normal quantile and PDF tail expectation.</li>
+    <li><strong>Parametric Student-t:</strong> Maximum Likelihood Estimation of degrees of freedom nu; analytical Student-t quantile and exact closed-form expected shortfall.</li>
+    <li><strong>EWMA (RiskMetrics):</strong> Recursive exponential decay covariance matrix (lambda=0.94) with normal distribution assumption.</li>
+    <li><strong>Filtered Historical Simulation (FHS):</strong> GARCH(1,1) with Student-t innovations; standardized residuals resampled and scaled by 1-day ahead conditional volatility.</li>
+    <li><strong>Monte Carlo Simulation:</strong> Cholesky factorization of empirical covariance matrix with multivariate normal simulation under explicit deterministic RNG seed.</li>
+  </ul>
+
+  <h2>6. Limitations & Known Weaknesses</h2>
+  <ul>
+    <li>Daily rebalancing assumption: portfolio weights are assumed to rebalance without friction or transaction costs.</li>
+    <li>Single-day horizon: model forecasts 1 trading day ahead; scaling to 10-day regulatory horizons via square-root-of-time introduces well-documented approximation errors.</li>
+    <li>Fat-tailed innovations: standard Gaussian parametric models systematically underestimate tail loss severity during market stress.</li>
+    <li>Static correlation assumptions: parametric models do not capture dynamic asymmetric correlation spikes during market selloffs without explicit copula models.</li>
+  </ul>
+
+  <h2>7. Reproducibility & Provenance Appendix</h2>
+  <table>
+    <tr><th>Parameter</th><th>Value</th></tr>
+    <tr><td>Report Generation UTC</td><td>2026-10-24T18:16:31.469345+00:00</td></tr>
+    <tr><td>Config SHA256</td><td><code>5e37ba00c7525d16844ad952bfecd2906989d6a110f7c08f09a73c8ae4085d36</code></td></tr>
+    <tr><td>Test Evaluations Count</td><td>1</td></tr>
+    <tr><td>Global Seed</td><td>42</td></tr>
+    <tr><td>Monte Carlo Seed</td><td>1337</td></tr>
+    <tr><td>Synthetic Seed</td><td>777</td></tr>
+  </table>
+
+  <div class="footer">
+    Market Risk Model Validation Workbench &copy; 2026. Educational prototype, inspired by model-validation practice; not a production risk system; no claim of compliance with Basel, SR 11-7, or any other regulation.
+  </div>
+</div>
+</body>
+</html>

@@ -17,6 +17,12 @@ from rvw.portfolio.portfolio import Portfolio, portfolio_returns
 logger = logging.getLogger(__name__)
 
 
+def format_alpha_col(alpha: float) -> str:
+    """Format an alpha float into a clean column label: e.g. 0.99 -> '99', 0.975 -> '97.5'."""
+    val = round(alpha * 100.0, 4)
+    return f"{int(val)}" if val.is_integer() else f"{val:g}"
+
+
 @dataclass
 class ForecastFrame:
     """Out-of-sample walk-forward forecasts, realized returns, and hits."""
@@ -125,8 +131,8 @@ def run_walkforward(
     forecast_dates = returns.index[window_length:]
     n_forecasts = len(forecast_dates)
 
-    var_cols = [f"{int(a * 100)}" if a.is_integer() else f"{a:.3f}".rstrip("0") for a in var_alphas]
-    es_cols = [f"{int(a * 100)}" if a.is_integer() else f"{a:.3f}".rstrip("0") for a in es_alphas]
+    var_cols = [format_alpha_col(a) for a in var_alphas]
+    es_cols = [format_alpha_col(a) for a in es_alphas]
 
     var_matrix = np.full((n_forecasts, len(var_alphas)), np.nan)
     es_matrix = np.full((n_forecasts, len(es_alphas)), np.nan)

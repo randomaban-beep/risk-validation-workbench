@@ -58,15 +58,21 @@ def classify_basel_zone(
     p0 = 1.0 - confidence_level
     cum_prob = float(stats.binom.cdf(exceptions, window_length, p0))
 
-    if exceptions <= 4:
+    # Scale cutoff boundaries proportionally to sample length (standard: 4 and 9 per 250 days)
+    scale = max(1.0, window_length / 250.0)
+    green_cutoff = int(np.floor(4.0 * scale))
+    yellow_cutoff = int(np.floor(9.0 * scale))
+
+    if exceptions <= green_cutoff:
         zone = "Green"
         penalty = 0.0
         interpretation = "Model accepted. No supervisory capital add-on warranted."
-    elif exceptions <= 9:
+    elif exceptions <= yellow_cutoff:
         zone = "Yellow"
-        # Standard Basel penalty tiers: 5 -> +0.40, 6 -> +0.50, 7 -> +0.65, 8 -> +0.75, 9 -> +0.85
+        # Standard Basel penalty tiers scaled
         penalty_table = {5: 0.40, 6: 0.50, 7: 0.65, 8: 0.75, 9: 0.85}
-        penalty = penalty_table.get(exceptions, 0.85)
+        step = min(9, max(5, int(5 + 4 * (exceptions - green_cutoff) / max(1, yellow_cutoff - green_cutoff))))
+        penalty = penalty_table.get(step, 0.85)
         interpretation = "Supervisory scrutiny. Scaling factor add-on applies."
     else:
         zone = "Red"

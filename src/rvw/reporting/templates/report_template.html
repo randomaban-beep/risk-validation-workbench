@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Market Risk Model Validation Report</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #0f172a;
+      --accent: #2563eb;
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #334155;
+      --text-bold: #0f172a;
+      --danger: #dc2626;
+      --warning: #d97706;
+      --success: #16a34a;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+      margin: 0;
+      padding: 2rem 1rem;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      padding: 3rem;
+      border: 1px solid var(--border);
+    }
+    h1, h2, h3 {
+      color: var(--text-bold);
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-size: 2.25rem;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.75rem;
+      margin-top: 0;
+    }
+    h2 {
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+    .badge-synthetic {
+      background-color: #fef3c7;
+      color: #92400e;
+      border: 1px solid #fde68a;
+      font-weight: bold;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+    .disclaimer-box {
+      background-color: #eff6ff;
+      border-left: 4px solid var(--accent);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+      font-size: 0.95rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.75rem 1rem;
+      text-align: left;
+    }
+    th {
+      background-color: #f1f5f9;
+      color: var(--text-bold);
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+    .zone-green {
+      color: var(--success);
+      font-weight: bold;
+    }
+    .zone-yellow {
+      color: var(--warning);
+      font-weight: bold;
+    }
+    .zone-red {
+      color: var(--danger);
+      font-weight: bold;
+    }
+    ul {
+      padding-left: 1.5rem;
+    }
+    li {
+      margin-bottom: 0.5rem;
+    }
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Market Risk Model Validation Report</h1>
+
+  {% if is_synthetic %}
+  <div class="badge-synthetic">DATA SOURCE: SYNTHETIC</div>
+  {% else %}
+  <div style="background-color: #dcfce7; color: #166534; padding: 0.25rem 0.75rem; border-radius: 9999px; display: inline-block; font-weight: bold; font-size: 0.875rem; margin-bottom: 1rem;">DATA SOURCE: {{ source }}</div>
+  {% endif %}
+
+  <div class="disclaimer-box">
+    <strong>Mandatory Regulatory & Production Disclaimer:</strong><br>
+    {{ disclaimer }}
+  </div>
+
+  <h2>1. Executive Summary & Algorithmic Findings</h2>
+  <ul>
+    {% for finding in findings %}
+    <li>{{ finding }}</li>
+    {% endfor %}
+  </ul>
+
+  <h2>2. Indicative Universe & Data Quality Audit</h2>
+  <p><strong>Portfolio:</strong> <code>{{ portfolio_name }}</code></p>
+  <p><strong>Assets Included ({{ tickers|length }}):</strong> {{ tickers|join(", ") }}</p>
+  <p><strong>Evaluation Dates:</strong> {{ start_date }} to {{ end_date }}</p>
+
+  <h2>3. Out-of-Sample Test Period Backtest Results (99% VaR & 99% ES)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Obs</th>
+        <th>Exceptions</th>
+        <th>Rate</th>
+        <th>Expected</th>
+        <th>Kupiec p-val</th>
+        <th>Indep p-val</th>
+        <th>CC p-val</th>
+        <th>Basel Zone</th>
+        <th>McNeil-Frey p</th>
+        <th>Mean VaR</th>
+        <th>Mean ES</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for name, m in test_metrics.items() %}
+      <tr>
+        <td><strong>{{ name }}</strong></td>
+        <td>{{ m.observations }}</td>
+        <td>{{ m.exceptions }}</td>
+        <td>{{ "%.2f"|format(m.exception_rate * 100) }}%</td>
+        <td>{{ "%.1f"|format(m.expected_exceptions) }}</td>
+        <td>{{ "%.4f"|format(m.kupiec_p) }}</td>
+        <td>{{ "%.4f"|format(m.independence_p) }}</td>
+        <td>{{ "%.4f"|format(m.conditional_coverage_p) }}</td>
+        <td class="zone-{{ m.basel_zone|lower }}">{{ m.basel_zone }}</td>
+        <td>{{ "%.4f"|format(m.mcneil_frey_p) }}</td>
+        <td>{{ "%.4f"|format(m.mean_var) }}</td>
+        <td>{{ "%.4f"|format(m.mean_es) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>4. Validation Period Tuning & Hyperparameter Selection</h2>
+  <p><strong>Selected Rolling Window:</strong> <code>{{ hyperparameter_selection.selected_window_length }}</code> trading days</p>
+  <p><strong>Selected EWMA Lambda:</strong> <code>{{ hyperparameter_selection.selected_ewma_lambda }}</code></p>
+  <p><strong>Selection Metric:</strong> {{ hyperparameter_selection.selection_metric }} (Score: {{ hyperparameter_selection.best_score }})</p>
+
+  <h2>5. Model Methodologies & Assumptions</h2>
+  <ul>
+    <li><strong>Historical Simulation (HS):</strong> Empirical quantile of rolling historical losses with linear interpolation. Expected Shortfall estimated as empirical conditional tail mean.</li>
+    <li><strong>Parametric Normal:</strong> Analytical Gaussian variance-covariance model with standard normal quantile and PDF tail expectation.</li>
+    <li><strong>Parametric Student-t:</strong> Maximum Likelihood Estimation of degrees of freedom nu; analytical Student-t quantile and exact closed-form expected shortfall.</li>
+    <li><strong>EWMA (RiskMetrics):</strong> Recursive exponential decay covariance matrix (lambda={{ hyperparameter_selection.selected_ewma_lambda }}) with normal distribution assumption.</li>
+    <li><strong>Filtered Historical Simulation (FHS):</strong> GARCH(1,1) with Student-t innovations; standardized residuals resampled and scaled by 1-day ahead conditional volatility.</li>
+    <li><strong>Monte Carlo Simulation:</strong> Cholesky factorization of empirical covariance matrix with multivariate normal simulation under explicit deterministic RNG seed.</li>
+  </ul>
+
+  <h2>6. Limitations & Known Weaknesses</h2>
+  <ul>
+    <li>Daily rebalancing assumption: portfolio weights are assumed to rebalance without friction or transaction costs.</li>
+    <li>Single-day horizon: model forecasts 1 trading day ahead; scaling to 10-day regulatory horizons via square-root-of-time introduces well-documented approximation errors.</li>
+    <li>Fat-tailed innovations: standard Gaussian parametric models systematically underestimate tail loss severity during market stress.</li>
+    <li>Static correlation assumptions: parametric models do not capture dynamic asymmetric correlation spikes during market selloffs without explicit copula models.</li>
+  </ul>
+
+  <h2>7. Reproducibility & Provenance Appendix</h2>
+  <table>
+    <tr><th>Parameter</th><th>Value</th></tr>
+    <tr><td>Report Generation UTC</td><td>{{ generated_at_utc }}</td></tr>
+    <tr><td>Config SHA256</td><td><code>{{ config_hash }}</code></td></tr>
+    <tr><td>Test Evaluations Count</td><td>{{ test_evaluations_count }}</td></tr>
+    <tr><td>Global Seed</td><td>{{ seeds.global_seed }}</td></tr>
+    <tr><td>Monte Carlo Seed</td><td>{{ seeds.monte_carlo_seed }}</td></tr>
+    <tr><td>Synthetic Seed</td><td>{{ seeds.synthetic_seed }}</td></tr>
+  </table>
+
+  <div class="footer">
+    Market Risk Model Validation Workbench &copy; 2026. Educational prototype, inspired by model-validation practice; not a production risk system; no claim of compliance with Basel, SR 11-7, or any other regulation.
+  </div>
+</div>
+</body>
+</html>
