@@ -21,7 +21,14 @@ from rvw.walkforward.engine import ForecastFrame, format_alpha_col
 
 @dataclass
 class ModelBacktestSummary:
-    """Consolidated backtest metrics for a single model at a given alpha level."""
+    """Consolidated backtest metrics for a single model at a given alpha level.
+
+    Basel traffic-light fields:
+      - ``basel_zone_worst``: worst zone over any rolling 250-day window (standard interpretation).
+      - ``basel_zone_latest``: zone of the final 250-day rolling window.
+      - ``basel_zone_full_period_scaled``: zone when exceptions and window length are both the full
+        test-period length (scaled cutoffs); labelled "full-period scaled, for illustration only".
+    """
     model_name: str
     alpha: float
     observations: int
@@ -34,7 +41,11 @@ class ModelBacktestSummary:
     independence_p: float
     conditional_coverage_lr: float
     conditional_coverage_p: float
-    basel_zone: str
+    # Standard Basel: worst and latest rolling-250-day window zones
+    basel_zone_worst: str
+    basel_zone_latest: str
+    # Full-period scaled (non-standard, labelled for illustration only)
+    basel_zone_full_period_scaled: str
     es_alpha: float
     mcneil_frey_stat: float
     mcneil_frey_p: float
@@ -42,6 +53,12 @@ class ModelBacktestSummary:
     mean_es: float
     failed_forecast_count: int
     fallback_count: int
+
+    # Backward-compatible alias: worst rolling window is the primary reported zone
+    @property
+    def basel_zone(self) -> str:
+        """Primary Basel zone: worst rolling-250-day window (standard interpretation)."""
+        return self.basel_zone_worst
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert summary to dictionary."""
@@ -58,7 +75,11 @@ class ModelBacktestSummary:
             "independence_p": round(self.independence_p, 4),
             "conditional_coverage_lr": round(self.conditional_coverage_lr, 3),
             "conditional_coverage_p": round(self.conditional_coverage_p, 4),
-            "basel_zone": self.basel_zone,
+            # Standard Basel rolling windows
+            "basel_zone": self.basel_zone_worst,          # primary: worst rolling window
+            "basel_zone_worst": self.basel_zone_worst,
+            "basel_zone_latest": self.basel_zone_latest,
+            "basel_zone_full_period_scaled": self.basel_zone_full_period_scaled,  # non-standard, illustration
             "es_alpha": self.es_alpha,
             "mcneil_frey_stat": round(self.mcneil_frey_stat, 3),
             "mcneil_frey_p": round(self.mcneil_frey_p, 4),
@@ -116,8 +137,26 @@ def evaluate_backtests(
     # 3. Christoffersen Conditional Coverage
     cc = christoffersen_conditional_coverage_test(valid_hits, confidence_level=var_alpha, significance_level=significance_level)
 
-    # 4. Basel Traffic Light
-    basel = classify_basel_zone(exceptions=n_exc, window_length=n_obs, confidence_level=var_alpha)
+    # 4. Basel Traffic Light — three flavours
+    # (a) Full-period scaled (non-standard — window scales with n_obs): labelled illustration only
+    basel_full = classify_basel_zone(exceptions=n_exc, window_length=n_obs, confidence_level=var_alpha)
+
+    # (b) Rolling 250-day windows (standard Basel interpretation)
+    ROLLING_WINDOW = 250
+    hits_series = pd.Series(valid_hits.astype(int))
+    if len(hits_series) >= ROLLING_WINDOW:
+        rolling_exc = hits_series.rolling(window=ROLLING_WINDOW).sum().dropna().astype(int)
+        zone_series = rolling_exc.apply(
+            lambda x: classify_basel_zone(int(x), window_length=ROLLING_WINDOW, confidence_level=var_alpha).zone
+        )
+        # Worst zone: Red > Yellow > Green
+        _zone_rank = {"Green": 0, "Yellow": 1, "Red": 2}
+        worst_zone = max(zone_series, key=lambda z: _zone_rank.get(z, 0))
+        latest_zone = zone_series.iloc[-1]
+    else:
+        # Not enough data for even one 250-day window; fall back to full-period scaled
+        worst_zone = basel_full.zone
+        latest_zone = basel_full.zone
 
     # 5. McNeil-Frey ES test
     mf = mcneil_frey_es_test(valid_losses, valid_var, valid_es, significance_level=significance_level)
@@ -135,7 +174,9 @@ def evaluate_backtests(
         independence_p=indep.p_value,
         conditional_coverage_lr=cc.lr_stat,
         conditional_coverage_p=cc.p_value,
-        basel_zone=basel.zone,
+        basel_zone_worst=worst_zone,
+        basel_zone_latest=latest_zone,
+        basel_zone_full_period_scaled=basel_full.zone,
         es_alpha=es_alpha,
         mcneil_frey_stat=mf.t_stat,
         mcneil_frey_p=mf.p_value_one_sided,

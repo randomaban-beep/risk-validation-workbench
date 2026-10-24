@@ -211,14 +211,16 @@ def write_results_summary_markdown(summary_data: Dict[str, Any], output_path: Pa
 
 ## Out-of-Sample Test Period Performance (99% VaR & 99% ES)
 
-| Model Name | Obs | Hits | Hit Rate | Expected | Kupiec p-val | CC p-val | Basel Zone | McNeil-Frey p-val | Mean VaR | Mean ES |
-|---|---|---|---|---|---|---|---|---|---|---|
+| Model Name | Obs | Hits | Hit Rate | Expected | Kupiec p-val | CC p-val | Basel Zone (worst 250d) | Basel Zone (latest 250d) | McNeil-Frey p-val | Mean VaR | Mean ES |
+|---|---|---|---|---|---|---|---|---|---|---|---|
 """
     for model_name, m in test_metrics.items():
+        worst = m.get("basel_zone_worst", m.get("basel_zone", "N/A"))
+        latest = m.get("basel_zone_latest", "N/A")
         md += (
             f"| **{model_name}** | {m['observations']} | {m['exceptions']} | "
             f"{m['exception_rate']:.2%} | {m['expected_exceptions']} | {m['kupiec_p']:.4f} | "
-            f"{m['conditional_coverage_p']:.4f} | **{m['basel_zone']}** | "
+            f"{m['conditional_coverage_p']:.4f} | **{worst}** | {latest} | "
             f"{m['mcneil_frey_p']:.4f} | {m['mean_var']:.4f} | {m['mean_es']:.4f} |\n"
         )
 

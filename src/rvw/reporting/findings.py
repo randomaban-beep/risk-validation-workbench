@@ -49,7 +49,7 @@ def generate_rule_based_findings(summary_data: Dict[str, Any]) -> List[str]:
     mf_rejects = []
 
     for model_name, m in test_metrics.items():
-        zone = m.get("basel_zone", "Unknown")
+        zone = m.get("basel_zone_worst", m.get("basel_zone", "Unknown"))
         if zone == "Green":
             green_models.append(model_name)
         elif zone == "Yellow":
@@ -118,5 +118,16 @@ def generate_rule_based_findings(summary_data: Dict[str, Any]) -> List[str]:
         findings.append(
             "McNeil-Frey ES Exceedance: No model showed statistically significant tail underestimation at alpha=0.05."
         )
+
+    # ES test power caveat — always appended
+    # Expected exceptions = n_obs * (1 - alpha): with ~1800 days and 1% VaR, expected ~18 exceedances
+    n_obs_sample = next(iter(test_metrics.values()), {}).get("observations", 0)
+    expected_exc_approx = round(n_obs_sample * 0.01, 1)
+    findings.append(
+        f"LIMITATION — McNeil-Frey ES Test Power: With approximately {n_obs_sample} test-period observations, "
+        f"the expected number of 99% VaR exceedances is approximately {expected_exc_approx}. "
+        "The McNeil-Frey test has limited statistical power with fewer than ~30 exceedances. "
+        "Non-rejection should not be interpreted as evidence of good ES calibration."
+    )
 
     return findings

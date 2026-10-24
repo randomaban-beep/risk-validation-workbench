@@ -29,10 +29,10 @@
 
 ## 3. Out-of-Sample Test Period Performance (99% VaR & 99% ES)
 
-| Model Name | Obs | Hits | Hit Rate | Expected | Kupiec p-val | Indep p-val | CC p-val | Basel Zone | McNeil-Frey p-val | Mean VaR | Mean ES |
-|---|---|---|---|---|---|---|---|---|---|---|---|
+| Model Name | Obs | Hits | Hit Rate | Expected | Kupiec p-val | Indep p-val | CC p-val | Basel Zone (worst 250d) | Basel Zone (latest 250d) | McNeil-Frey p-val | Mean VaR | Mean ES |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
 {% for name, m in test_metrics.items() %}
-| **{{ name }}** | {{ m.observations }} | {{ m.exceptions }} | {{ "%.2f"|format(m.exception_rate * 100) }}% | {{ "%.1f"|format(m.expected_exceptions) }} | {{ "%.4f"|format(m.kupiec_p) }} | {{ "%.4f"|format(m.independence_p) }} | {{ "%.4f"|format(m.conditional_coverage_p) }} | **{{ m.basel_zone }}** | {{ "%.4f"|format(m.mcneil_frey_p) }} | {{ "%.4f"|format(m.mean_var) }} | {{ "%.4f"|format(m.mean_es) }} |
+| **{{ name }}** | {{ m.observations }} | {{ m.exceptions }} | {{ "%.2f"|format(m.exception_rate * 100) }}% | {{ "%.1f"|format(m.expected_exceptions) }} | {{ "%.4f"|format(m.kupiec_p) }} | {{ "%.4f"|format(m.independence_p) }} | {{ "%.4f"|format(m.conditional_coverage_p) }} | **{{ m.get("basel_zone_worst", m.get("basel_zone", "N/A")) }}** | {{ m.get("basel_zone_latest", "N/A") }} | {{ "%.4f"|format(m.mcneil_frey_p) }} | {{ "%.4f"|format(m.mean_var) }} | {{ "%.4f"|format(m.mean_es) }} |
 {% endfor %}
 
 ---
@@ -62,6 +62,8 @@
 - **Horizon Extrapolation**: 1-day horizon risk metrics cannot be scaled to 10-day regulatory periods via square-root-of-time during volatile regimes.
 - **Fat-tail Risk**: Normal variance-covariance models systematically underestimate tail severity during market crises.
 - **Asymmetric Correlation**: Joint tail dependence is not captured by linear correlation matrices.
+- **ES Test Low Power**: The McNeil-Frey exceedance-residual test has low statistical power when the number of tail exceedances is small (typically < 30). At 1% VaR over ~1,800 test-period days, expected exceedances ≈ 18, which is near the lower bound for reliable inference. Non-rejection should not be interpreted as evidence of good ES calibration.
+- **Basel Traffic Light — Rolling Windows**: The standard Basel regime evaluates exceptions over rolling 250-day windows. The "worst zone" column reflects the most adverse window observed during the test period. The "latest zone" reflects the most recent 250 days. These are labelled "traffic-light classification, for illustration".
 
 ---
 
