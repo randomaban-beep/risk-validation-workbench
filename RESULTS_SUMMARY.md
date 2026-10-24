@@ -1,7 +1,7 @@
 # Market Risk Model Validation Benchmark: Headline Results
 
-**DATA SOURCE: SYNTHETIC**
-*Run Timestamp*: 2026-10-24T18:16:26.684427+00:00
+**DATA SOURCE: REAL MARKET DATA (yfinance)**
+*Run Timestamp*: 2026-10-24T22:21:41.253397+00:00
 *Portfolio*: `equal_weight` (12 assets)
 *Test Evaluations Count*: 1
 
@@ -11,18 +11,18 @@
 
 ## Out-of-Sample Test Period Performance (99% VaR & 99% ES)
 
-| Model Name | Obs | Hits | Hit Rate | Expected | Kupiec p-val | CC p-val | Basel Zone | McNeil-Frey p-val | Mean VaR | Mean ES |
-|---|---|---|---|---|---|---|---|---|---|---|
-| **historical_simulation** | 1455 | 12 | 0.82% | 14.55 | 0.4884 | 0.7118 | **Green** | 0.3279 | 0.0178 | 0.0229 |
-| **parametric_normal** | 1455 | 14 | 0.96% | 14.55 | 0.8841 | 0.8635 | **Green** | 0.0663 | 0.0177 | 0.0203 |
-| **parametric_t** | 1455 | 7 | 0.48% | 14.55 | 0.0269 | 0.0836 | **Green** | 0.7914 | 0.0212 | 0.0306 |
-| **ewma** | 1455 | 14 | 0.96% | 14.55 | 0.8841 | 0.0223 | **Green** | 0.0584 | 0.0172 | 0.0197 |
-| **garch_fhs** | 1455 | 13 | 0.89% | 14.55 | 0.6775 | 0.8156 | **Green** | 0.1912 | 0.0179 | 0.0219 |
-| **monte_carlo** | 1455 | 13 | 0.89% | 14.55 | 0.6775 | 0.8156 | **Green** | 0.0650 | 0.0178 | 0.0204 |
+| Model Name | Obs | Hits | Hit Rate | Expected | Kupiec p-val | CC p-val | Basel Zone (worst 250d) | Basel Zone (latest 250d) | McNeil-Frey p-val | Mean VaR | Mean ES |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| **historical_simulation** | 1466 | 13 | 0.89% | 14.66 | 0.6568 | 0.0148 | **Yellow** | Green | 0.9827 | 0.0186 | 0.0323 |
+| **parametric_normal** | 1466 | 14 | 0.95% | 14.66 | 0.8614 | 0.0219 | **Yellow** | Green | 0.0080 | 0.0173 | 0.0199 |
+| **parametric_t** | 1466 | 11 | 0.75% | 14.66 | 0.3149 | 0.1152 | **Green** | Green | 0.9408 | 0.0201 | 0.0307 |
+| **ewma** | 1466 | 28 | 1.91% | 14.66 | 0.0019 | 0.0023 | **Yellow** | Yellow | 0.0026 | 0.0151 | 0.0173 |
+| **garch_fhs** | 1466 | 13 | 0.89% | 14.66 | 0.6568 | 0.2378 | **Yellow** | Green | 0.3295 | 0.0186 | 0.0232 |
+| **monte_carlo** | 1466 | 14 | 0.95% | 14.66 | 0.8614 | 0.0219 | **Yellow** | Green | 0.0095 | 0.0173 | 0.0199 |
 
 ---
 
 ## Hyperparameter Selection (Validation Period Grid Search)
-- **Selected Rolling Window**: `500` trading days
-- **Selected EWMA Lambda**: `0.94`
-- **Objective Criterion**: `min(|actual_rate - 0.01| * 100 + 0.5 * LR_cc)` (Best score: `3.2203`)
+- **Selected Rolling Window**: `1000` trading days
+- **Selected EWMA Lambda**: `0.97`
+- **Objective Criterion**: `min(|actual_rate - 0.01| * 100 + 0.5 * LR_cc)` (Best score: `2.0225`)

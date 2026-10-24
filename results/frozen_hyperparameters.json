@@ -1,0 +1,130 @@
+{
+  "status": "FROZEN",
+  "frozen_at_utc": "2026-10-24T22:20:36.808469+00:00",
+  "config_sha256": "5e37ba00c7525d16844ad952bfecd2906989d6a110f7c08f09a73c8ae4085d36",
+  "selected_hyperparameters": {
+    "selected_window_length": 1000,
+    "selected_ewma_lambda": 0.97,
+    "selection_metric": "min(|actual_rate - 0.01| * 100 + 0.5 * LR_cc)",
+    "best_score": 2.0225,
+    "grid_evaluations": [
+      {
+        "model": "historical_simulation",
+        "window": 250,
+        "lambda": null,
+        "score": 10.360293831174538,
+        "exceptions": 41,
+        "p_cc": 5.4222784476538115e-05
+      },
+      {
+        "model": "parametric_normal",
+        "window": 250,
+        "lambda": null,
+        "score": 20.13130488065739,
+        "exceptions": 58,
+        "p_cc": 5.8562229164051045e-09
+      },
+      {
+        "model": "ewma",
+        "window": 250,
+        "lambda": 0.94,
+        "score": 10.020471230556801,
+        "exceptions": 49,
+        "p_cc": 0.00010282194646812234
+      },
+      {
+        "model": "ewma",
+        "window": 250,
+        "lambda": 0.97,
+        "score": 8.440662152951079,
+        "exceptions": 46,
+        "p_cc": 0.0004459825219738123
+      },
+      {
+        "model": "historical_simulation",
+        "window": 500,
+        "lambda": null,
+        "score": 2.633246660670802,
+        "exceptions": 24,
+        "p_cc": 0.0723221999198969
+      },
+      {
+        "model": "parametric_normal",
+        "window": 500,
+        "lambda": null,
+        "score": 5.913201990740197,
+        "exceptions": 36,
+        "p_cc": 0.00441328589716952
+      },
+      {
+        "model": "ewma",
+        "window": 500,
+        "lambda": 0.94,
+        "score": 9.873324939533267,
+        "exceptions": 45,
+        "p_cc": 0.0001220912114082863
+      },
+      {
+        "model": "ewma",
+        "window": 500,
+        "lambda": 0.97,
+        "score": 6.578229222213625,
+        "exceptions": 38,
+        "p_cc": 0.002465448501680932
+      },
+      {
+        "model": "historical_simulation",
+        "window": 1000,
+        "lambda": null,
+        "score": 2.0225285711899974,
+        "exceptions": 15,
+        "p_cc": 0.16440710602831407
+      },
+      {
+        "model": "parametric_normal",
+        "window": 1000,
+        "lambda": null,
+        "score": 3.0397216633605173,
+        "exceptions": 24,
+        "p_cc": 0.06159885107353682
+      },
+      {
+        "model": "ewma",
+        "window": 1000,
+        "lambda": 0.94,
+        "score": 8.584705214125275,
+        "exceptions": 35,
+        "p_cc": 0.0004273176646880113
+      },
+      {
+        "model": "ewma",
+        "window": 1000,
+        "lambda": 0.97,
+        "score": 7.620967435056203,
+        "exceptions": 33,
+        "p_cc": 0.0010091678178659582
+      }
+    ]
+  },
+  "universe": [
+    "SPY",
+    "QQQ",
+    "IWM",
+    "EFA",
+    "EEM",
+    "VNQ",
+    "TLT",
+    "IEF",
+    "LQD",
+    "HYG",
+    "GLD",
+    "DBC"
+  ],
+  "portfolios": [
+    "equal_weight",
+    "sixty_forty",
+    "risk_tilted",
+    "equity_heavy"
+  ],
+  "disclaimer": "Educational prototype, inspired by model-validation practice; not a production risk system; no claim of compliance with Basel, SR 11-7, or any other regulation."
+}
