@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rvw"
+version = "0.1.0"
+description = "Market Risk Model Validation Workbench"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Market Risk Validation Workbench Team"}
+]
+dependencies = [
+    "numpy==1.26.4",
+    "pandas==2.2.2",
+    "scipy==1.13.1",
+    "statsmodels==0.14.2",
+    "arch==7.0.0",
+    "streamlit==1.36.0",
+    "plotly==5.22.0",
+    "pytest==8.2.2",
+    "pyyaml==6.0.1",
+    "yfinance==0.2.40",
+    "pyarrow==16.1.0",
+    "jinja2==3.1.4",
+    "click==8.1.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.0",
+]
+
+[project.scripts]
+rvw = "rvw.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
+pythonpath = ["src"]
