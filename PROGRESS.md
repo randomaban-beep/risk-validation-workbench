@@ -17,7 +17,8 @@
 | **M2** | Portfolio Framework, Returns Engine & Time Period Splitter | Completed | Portfolio weights, preset allocations, returns calculation, PeriodSplit freeze guard |
 | **M3** | Comprehensive Risk Calculation Engine (6 Core Models) | Completed | HS, Normal, Student-t, EWMA, GARCH FHS, Monte Carlo, analytical reference tests |
 | **M4** | Strict Walk-Forward Simulation Engine | Completed | t-1 causality guard, rolling/expanding window, refit frequency, failure tracking |
-| **M5** | Regulatory & Statistical Backtesting Suite | In Progress | Kupiec, Christoffersen independence, CC, Basel traffic-light, McNeil-Frey ES |
+| **M5** | Regulatory & Statistical Backtesting Suite | Completed | Kupiec, Christoffersen independence, CC, Basel traffic-light, McNeil-Frey ES |
+| **M6** | Hyperparameter Tuning, Selection & Validation Freeze | In Progress | Validation window/lambda tuning, freeze artifact, test-set lock |
 | **M4** | Strict Walk-Forward Simulation Engine | Not Started | t-1 causality guard, rolling/expanding window, refit frequency, failure tracking |
 | **M5** | Regulatory & Statistical Backtesting Suite | Not Started | Kupiec, Christoffersen independence, CC, Basel traffic-light, McNeil-Frey ES |
 | **M6** | Hyperparameter Tuning, Selection & Validation Freeze | Not Started | Validation window/lambda tuning, freeze artifact, test-set lock |
