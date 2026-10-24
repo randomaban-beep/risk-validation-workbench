@@ -146,11 +146,11 @@ flowchart TD
 
 1. **Kupiec, P. H. (1995)**: *Techniques for Verifying the Accuracy of Risk Measurement Models*. Journal of Derivatives, 3(2), 73-84.
 2. **Christoffersen, P. F. (1998)**: *Evaluating Interval Forecasts*. International Economic Review, 39(4), 841-862.
-3. **McNeil, A. J., & Frey, R. (2000)**: *Estimation of Tails of Related Risk Extremes with Applications to Value at Risk*. Extremes, 3(3), 227-250.
+3. **McNeil, A. J., & Frey, R. (2000)**: *Estimation of tail-related risk measures for heteroscedastic financial time series: an extreme value approach*. Journal of Empirical Finance, 7(3-4), 271-300.
 4. **Basel Committee on Banking Supervision (1996, 2019)**: *Supervisory Framework for the Use of Backtesting in Conjunction with the Internal Models Approach to Market Risk Capital Requirements* / *Minimum Capital Requirements for Market Risk (FRTB)*.
-5. **J.P. Morgan / Reuters (1996)**: *RiskMetrics Technical Document (4th ed.)*.
+5. **J.P. Morgan / Reuters (1996)**: *RiskMetrics — Technical Document (4th ed.)*.
 6. **Barone-Adesi, G., Giannopoulos, K., & Vosper, L. (1999)**: *VaR without correlations for portfolios of derivative securities*. Journal of Futures Markets, 19(5), 583-602.
-7. **Sheppard, K. (2021)**: *`arch`: Autoregressive Conditional Heteroskedasticity in Python*.
+7. **Sheppard, K. (2021)**: *`arch`: Autoregressive Conditional Heteroskedasticity in Python*. Available at: https://github.com/bashtage/arch.
 
 ---
 
