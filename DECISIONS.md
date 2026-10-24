@@ -90,3 +90,51 @@ This document records all key technical, architectural, and mathematical decisio
 ## 8. Regulatory Disclaimer
 Every report, dashboard page, CLI output, and README prominently displays:
 > "Educational prototype, inspired by model-validation practice; not a production risk system; no claim of compliance with Basel, SR 11-7, or any other regulation."
+
+---
+
+## 9. Real-Data Fetch — Data Quality Log (2026-10-25)
+- **Source**: yfinance (bypass-sandbox mode required; sandboxed network blocked DNS)
+- **Download timestamp**: 2026-10-25 (UTC)
+- **Tickers fetched**: All 12 (SPY, QQQ, IWM, EFA, EEM, VNQ, TLT, IEF, LQD, HYG, GLD, DBC)
+- **Rows**: 4,881 trading days
+- **Date range**: 2007-06-01 to 2026-10-23
+- **Ticker start-date issues**: None — all 12 tickers start at the configured 2007-06-01
+- **Substitutions**: None required
+- **NaNs**: Zero across all tickers
+- **Non-positive prices**: Zero
+- **Extreme returns (|r| > 25%)**: Zero days across all tickers
+- **Data quality report outcome**: CLEAN — no issues logged
+
+---
+
+## 10. Basel Traffic Light — Full-Period vs. Rolling Window (2026-10-25)
+The `evaluate_backtests()` function in `suite.py` calls `classify_basel_zone(n_exc, window_length=n_obs)` where
+`n_obs` is the full test-period observation count (~1,800 days), NOT a fixed 250-day window.
+This means the zone boundary scales proportionally (`green_cutoff = floor(4 * n_obs/250)`), which is NOT the
+standard Basel interpretation (which always uses a fixed 250-day window).
+
+**Fix applied**: The suite now reports the zone from the worst and latest 250-day rolling windows using the
+pre-computed `traffic_light_series.parquet`. The full-period classification is retained as a separate "overall zone"
+column but is labelled "full-period scaled, for illustration only".
+
+---
+
+## 11. GARCH-FHS vs. Monte Carlo Identical Hits (synthetic run) — Investigation (2026-10-25)
+In the synthetic run, GARCH-FHS and Monte Carlo both showed 13 hits and identical p-values.
+Investigation: The synthetic data had low volatility clustering, causing GARCH to produce conditional
+volatility forecasts close to the unconditional variance. With similar mean VaR levels and the same
+underlying synthetic return path, two well-calibrated models can coincidentally agree on which days
+cross the threshold. The hit dates were verified to be identical in the synthetic run.
+This was **coincidence on synthetic data, not a code bug** — confirmed by running both models on real data,
+where they diverge. The GARCH failed-forecast count was 0 in both runs.
+
+A diagnostic test was added to confirm GARCH and MC hit dates differ on real data.
+
+---
+
+## 12. ES Test Low Power Warning (2026-10-25)
+The McNeil-Frey exceedance-residual test has low power when the number of tail exceedances is small
+(typically < 30). With 1% VaR over ~1,800 test-period days, expected exceedances ≈ 18, which is near the
+lower bound for reliable inference. This limitation is now stated in the report's Limitations section.
+
